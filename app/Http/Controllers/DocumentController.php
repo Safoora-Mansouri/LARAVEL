@@ -8,6 +8,8 @@ use App\Models\Document;
 use App\Models\Etudient;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 class DocumentController extends Controller
 {
@@ -18,20 +20,25 @@ class DocumentController extends Controller
      */
     public function index()
     {
-        $documents = Document::all();
-        return view('documents.index', compact('documents'));
+        $etudiant = Etudient::where('user_id', auth()->id())->first();
+        $documents = Document::select()
+        ->orderBy('titre')
+        // ->limit(5)
+        ->paginate(5);
+          
+        return view('documents.index', compact('documents','etudiant'));
     }
 
-    //////////////////////////////////////////////////////////
-    public function pages()
-    {
-        $docs = Document::select()
-            ->orderBy('titre')
-            // ->limit(5)
-            ->paginate(5); // be jaye limit va get
-
-        return view('documents.pages', ['docs' => $docs]);
-    }
+    /////////////////////////////////////////////////////////////////
+    // public function pages()
+    // {
+    //     $docs = Document::select()
+    //         ->orderBy('titre')
+    //         // ->limit(5)
+    //         ->paginate(5); // be jaye limit va get
+      
+    //     return view('documents.pages', ['docs' => $docs]);
+    // }
 ///////////////////////////////////////////////////////////////////
     /**
      * Show the form for creating a new resource.
@@ -40,8 +47,20 @@ class DocumentController extends Controller
      */
     public function create()
     {
-        return view('documents.create');
+        if (Auth::check()) {
+            $user = Auth::user();
+            $etudiant = Etudient::where('user_id', $user->id)->first();
+            if ($etudiant) {
+                $etudiantId = $etudiant->id;
+                return view('documents.creat', compact('etudiantId'));
+            }
+            return redirect()->route('etudient.create')->with('error', 'You must be a student to create a document.');;
+        } else {
+            // User is not authenticated, handle the error or redirect to the login page
+            return redirect()->route('login')->with('error', 'You must be logged in to create a document.');
+        }
     }
+    
 ////////////////////////////////////////////////////////////////
     /**
      * Store a newly created resource in storage.
@@ -51,135 +70,115 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $etudiantId = "";
-        if ($user) {
+        // Check if user is authenticated
+        if (Auth::check()) {
+            $user = Auth::user();
             $etudiant = Etudient::where('user_id', $user->id)->first();
-            if ($etudiant) {
-                $etudiantId = $etudiant->id;
-                $request->validate([
-                    'titre_fr' => 'required|min:2|max:50',
-                    'titre_en' => 'required|min:2|max:50',
-                    'date' => 'required|date_format:Y-m-d',
+            $etudiantId = $etudiant->id;
+    
+            
+            $request->validate([
+                'titre_fr' => 'required',
+                'titre_en' => 'required',
+                'file' => 'required|mimes:pdf,zip,doc|max:2048',
+                'date' => 'required|date',
+            ]);
+    
+           
+            // Store the file
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+    
+               $fileName= time().'.'.$file->extension();
+               // storage/app/public/files
+                $filePath = $file->storeAs('public/files',$fileName);
+    
+                Document::create([
+                    'titre' => $request->titre_en,
+                    'titre_fr' => $request->titre_fr,
+                    'titre_en' => $request->titre_en,
+                    'file' => $fileName,
+                    'date' => $request->date,
+                    'etudient_id' => $etudiantId, // Use $etudiantId variable instead of $request->etudient_id
                 ]);
-                $document = new Document;
-                $document->titre_fr = ucfirst($request->titre_fr);
-                $document->titre_en = ucfirst($request->titre_en);
-                $document->date = $request->date;
-                $document->etudient_id = $etudiantId;
-                $document->save();
-                return redirect()->route('document.index')->with('success', 'Document created successfully');
+    
+                return back()->with('success', 'Document created successfully');
             }
+        } else {
+            // User is not authenticated, handle the error or redirect to the login page
+            return  back()->with('error', 'You must be logged in to create a document.');
         }
-
-        // if (isset($image) && $image['error'] === UPLOAD_ERR_OK) {
-        //     print_r($image);
-        //     // Move the file to a permanent location
-        //     $uploadDirectory = 'img/timbre/';
-        //     $path = $uploadDirectory . basename($image['name']);
-
-        //     if (!file_exists($uploadDirectory)) {
-        //         mkdir($uploadDirectory, 0755, true);
-        //     }
-
-        //     $fileType = pathinfo($path, PATHINFO_EXTENSION);
-        //     // Validate file type
-        //     $allowedFileTypes = array('jpg', 'jpeg', 'png', 'gif');
-        //     if (!in_array(strtolower($fileType), $allowedFileTypes)) {
-        //         die('Error: Only JPG, JPEG, PNG, and GIF files are allowed.');
-        //     }
-        //     move_uploaded_file($image['tmp_name'], $path);
-        // }
-
-        // if ($request->hasFile('file')) {
-        //     $file = $request->file('file');
-
-        //     // Validate the file if needed
-        //     $this->validate($request, [
-        //         'file' => 'required|mimes:pdf,zip,doc|max:2048',
-        //     ]);
-
-        //     // Move the uploaded file to a directory
-        //     $path = $file->store('uploads');
-
-        //     // You can save the file path to the database if required
-        //     // $fileModel = new File;
-        //     // $fileModel->path = $path;
-        //     // $fileModel->save();
-
-        //     return "File uploaded successfully!";
-        // }
-
-        // return "No file selected.";
-   
-
-        return redirect()->route('login')->with('error', 'Forbidden access');
-    }
-///////////////////////////////////////////////////////////////////////////
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $document = Document::findOrFail($id);
-        return view('documents.show', compact('document'));
     }
 
-    public function showPdf(Document $document)
-    {
-        $pdf = PDF::loadview('document.show-pdf', ['document' => $document]);
-
-        // return $pdf->download('blog.pdf');
-        return $pdf->stream('document.pdf');
-    }
-//////////////////////////////////////////////////////////////////////
-    /**
+    ///////////////////////////////////////////
+ /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Document  $Document
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Document $document)
     {
-        $document = Document::findOrFail($id);
+        
         return view('documents.edit', compact('document'));
     }
-//////////////////////////////////////////////////////////////////
+
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Document  $document
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+    public function update(Request $request, Document $document)
     {
-        $user = Auth::user();
-        $etudiantId = "";
-        if ($user) {
+        // Check if user is authenticated
+        if (Auth::check()) {
+            $user = Auth::user();
             $etudiant = Etudient::where('user_id', $user->id)->first();
-            if ($etudiant) {
-                $etudiantId = $etudiant->id;
-                $request->validate([
-                    'titre_fr' => 'required|min:2|max:50',
-                    'titre_en' => 'required|min:2|max:50',
-                    'date' => 'required|date_format:Y-m-d',
+            $etudiantId = $etudiant->id;
+    
+            
+            $request->validate([
+                'titre_fr' => 'required',
+                'titre_en' => 'required',
+                'file' => 'required|mimes:pdf,zip,doc|max:2048',
+                'date' => 'required|date',
+            ]);
+    
+            
+            // Store the file
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+    
+               $fileName= time().'.'.$file->extension();
+               // storage/app/public/files
+               $file->storeAs('public/files',$fileName);
+    
+               $document->update([
+                    'titre' => $request->titre_en,
+                    'titre_fr' => $request->titre_fr,
+                    'titre_en' => $request->titre_en,
+                    'file' => $fileName,
+                    'date' => $request->date,
+                    'etudient_id' => $etudiantId, // Use $etudiantId variable instead of $request->etudient_id
                 ]);
-                $document = Document::findOrFail($id);
-                $document->titre_fr = ucfirst($request->titre_fr);
-                $document->titre_en = ucfirst($request->titre_en);
-                $document->date = $request->date;
-                $document->etudient_id = $etudiantId;
-                $document->save();
-                return redirect()->route('document.show', $document)->with('success', 'Document updated successfully');
+    
+                return back()->with('success', 'Document updated successfully');
             }
+        } else {
+            // User is not authenticated, handle the error or redirect to the login page
+            return  back()->with('error', 'You must be logged in to update a document.');
         }
 
-        return redirect()->route('login')->with('error', 'Forbidden access');
+        return
+        redirect()->route('login')->with('error', 'forbidden access');
+       
+
+        
     }
+    
 //////////////////////////////////////////////////////////////////////
     /**
      * Remove the specified resource from storage.
@@ -194,4 +193,5 @@ class DocumentController extends Controller
         return redirect()->route('document.index')->with('success', 'Document deleted successfully');
     }
     //////////////////////////////////////////////////////////////////////////
+
 }

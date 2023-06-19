@@ -48,6 +48,7 @@ return [
     'text_ville' => 'Ville',
     'text_select'=>'selecter',
     'text_doc' => 'documents',
+    'text_titleCreatDoc'=>'creer un document',
     'text_titlePageDoc'=>'List de Documentes',
     'text_selectAnDoc' => 'Vous pouvez consulter la liste des fichiers de documents ici. Cliquez sur le titre pour télécharger.'
 ];

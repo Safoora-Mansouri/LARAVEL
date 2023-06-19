@@ -48,7 +48,9 @@ class etudientController extends Controller
      */
     public function store(Request $request)
     {
-        $userID = Auth::user()->id;
+        if (Auth::check()) {
+            $userID = Auth::user()->id;
+      
         $request->validate([
             'nom' => 'required',
             'adresse' => 'required',
@@ -67,6 +69,10 @@ class etudientController extends Controller
             'user_id' => $userID,
         ]);
         return redirect()->route('etudient.index');
+    } else {
+        // User is not authenticated, handle the error or redirect to the login page
+        return redirect()->route('login');
+    }
     }
 
     /////////////////////////////////////////////////////////////////

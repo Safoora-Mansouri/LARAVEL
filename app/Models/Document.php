@@ -13,6 +13,7 @@ class Document extends Model
         'titre',
         'titre_fr',
         'titre_en',
+        'file',
         'date',
         'etudient_id',
     ];

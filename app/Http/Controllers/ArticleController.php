@@ -56,20 +56,12 @@ class ArticleController extends Controller
         $etudiant = Etudient::where('user_id', $user->id)->first();
 
         $request->validate([
-            'titre_fr' => 'required|min:2|max:50',
-            'titre_en' => 'required|min:2|max:50',
-            'contenu_fr' => 'required',
-            'contenu_en' => 'required',
-            'date_de_creation' => 'required|date_format:Y-m-d',
-            'quantite' => 'required|integer|min:0',
-            'mot_de_passe' => [
-                'required',
-                'min:2',
-                'max:20',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/',
-            ],
-            'confirmation_mot_de_passe' => 'required|same:mot_de_passe',
-            'ville' => 'required|exists:villes,id',
+             'titre_fr' => 'required|min:2|max:50',
+             'titre_en' => 'required|min:2|max:50',
+             'contenu_fr' => 'required',
+             'contenu_en' => 'required',
+             'date_de_creation' => 'required|date_format:Y-m-d',
+             
         ]);
 
         $article = new Article;
@@ -85,6 +77,8 @@ class ArticleController extends Controller
 
         return redirect()->route('article.index')->with('success', 'Article created successfully');
     }
+
+     
 
     /**
      * Display the specified resource.
@@ -166,14 +160,7 @@ class ArticleController extends Controller
                     'contenu_fr' => 'required',
                     'contenu_en' => 'required',
                     'date_de_creation' => 'required|date_format:Y-m-d',
-                    'quantite' => 'required|integer|min:0',
-                    'mot_de_passe' => [
-                        'required',
-                        'min:2',
-                        'max:20',
-                        'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/',
-                    ],
-                    'confirmation_mot_de_passe' => 'required|same:mot_de_passe',
+                   
                 ]);
                 $article->update([
                     'titre_fr' => ucfirst($request->titre_fr),
@@ -191,11 +178,7 @@ class ArticleController extends Controller
         return
         redirect()->route('login')->with('error', 'forbidden access');
        
-
-        
     }
-
-
     /**
      * Remove the specified resource from storage.
      *

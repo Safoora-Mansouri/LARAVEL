@@ -2,7 +2,6 @@
 @section('title',trans('lang.text_titlePageDoc'))
 @section('titleHeader',trans('lang.text_titlePageDoc'))
 @section('content')
-
 <div class="container">
     @if (isset($message))
     <h3 class="text-danger p-5">{{$message}}</h3>
@@ -31,24 +30,29 @@
             @foreach($documents as $document)
             <tr>
                 <td>{{ $document->id }}</td>
-                <td><a href="{{ route('document.show', ['document' => $document->id]) }}" class="">{{ $document->titre }}</a></td>
+                <td> <a href="{{ asset('storage/files/'.$document->file) }}">{{ $document->titre }}</a></td>
+
+
                 <td>{{ $document->date }}</td>
                 <td>
 
-                    @if (Auth::check() && $document->etudient_id == $etudiantId)
-                    <div class="butt">
+                    @if (Auth::check() && $etudiant && $document->etudient_id == $etudiant->id)
 
-                        <form action="{{ route('document.destroy', $document->id) }}" method="post" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">{{ __('lang.text_deletButton') }}</button>
-                        </form>
-                        @endif
+
+                    <form action="{{ route('document.destroy', $document->id) }}" method="post" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">{{ __('lang.text_deletButton') }}</button>
+                    </form>
+
+                    <a href="{{ route('document.edit', $document->id) }}" class="btn btn-warning  ms-2">{{ __('lang.text_update') }}</a>
+                    @endif
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    {{$documents}}
     @endif
 </div>
 @endsection

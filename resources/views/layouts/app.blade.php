@@ -16,7 +16,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-warning">
             <div class="container-fluid">
                 @php $lang = session('locale') @endphp
-                <a class="navbar-brand" href="#">@lang('lang.text_hello') {{ Auth::user() ? Auth::user()->name : 'Guest'}}</a>
+                <a class="navbar-brand" href="#">@lang('lang.text_hello') {{ Auth::user() ? 'user' : 'Guest'}}</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -26,8 +26,7 @@
                         <a class="nav-link" href="{{ route('registration') }}">@lang('lang.text_registration')</a>
                         <a class="nav-link" href="{{ route('login')}}">@lang('lang.text_login')</a>
                         @else
-                        <a class="nav-link" href="{{route('user.list')}}">@lang('lang.text_users')</a>
-                        <a class="nav-link" href="{{ route('etudient.index')}}">@lang('lang.text_blog')</a>
+
                         <a class="nav-link" href="{{ route('logout')}}">@lang('lang.text_logout')</a>
                         @endguest
                         <a class="nav-link @if($lang =='fr') text-info @endif" href="{{ route('lang', 'fr')}}">Francais<i class='flag flag-france'></i></a>

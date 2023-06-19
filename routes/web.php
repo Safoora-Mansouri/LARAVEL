@@ -63,7 +63,7 @@ Route::get('/show-document/{document}', [DocumentController::class, 'show'])->na
 
 Route::get('document-pdf/{document}', [DocumentController::class, 'showPdf'])->name('document.showPdf')->middleware('auth');
 Route::get('query', [DocumentController::class, 'query']);
-Route::get('document-page', [DocumentController::class, 'pages']);
+Route::get('document-page', [DocumentController::class, 'index']);
 
 
 //auth

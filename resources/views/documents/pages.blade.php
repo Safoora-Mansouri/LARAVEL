@@ -10,7 +10,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Title</th>
-                    <th>Author</th>
+                    <!-- <th>Author</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -23,11 +23,10 @@
                 @endforeach
             </tbody>
         </table>
-        <!-- {{ $docs->onEachSide(2)->links() }} -->
-        {{ $
-        }}
+      
 
     </div>
+    {{  $docs }}
 </div>
 
 @endsection
