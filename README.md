@@ -16,23 +16,23 @@ document handling, input validation, and logout feature. For a more detailed and
 --------------------------------------------------------------------------------------------------------------------
 Commands:
 
-php artisan make:Controller DocumentController -r
-php artisan make:model Document
-php artisan make:factory DocumentFactory
-php artisan migrae:fresh
-php artisan db:seed
-php artisan make:model Article
-php artisan make:factory ArticleFactory
-php artisan make:migration -m Article
-php artisan make:Controller ArticleController -r
-php artisan make:Controller LocalizationController
-php artisan make:middleware Localization
-php artisan make:Controller CustomAuthController
-php artisan make:middleware testMid
-php artisan make:controller localizationController
-php artisan tinker "App\Models\Ville::factory()->times(15)->create();"
+-php artisan make:Controller DocumentController -r
+-php artisan make:model Document
+-php artisan make:factory DocumentFactory
+-php artisan migrae:fresh
+-php artisan db:seed
+-php artisan make:model Article
+-php artisan make:factory ArticleFactory
+-php artisan make:migration -m Article
+-php artisan make:Controller ArticleController -r
+-php artisan make:Controller LocalizationController
+-php artisan make:middleware Localization
+-php artisan make:Controller CustomAuthController
+-php artisan make:middleware testMid
+-php artisan make:controller localizationController
+-php artisan tinker "App\Models\Ville::factory()->times(15)->create();"
 i do not use it in project , just write a function for download and upload the fi les instead.
-composer require barryvdh/laravel-dompdf
+-composer require barryvdh/laravel-dompdf
 
 
 ----------------------------------------------------------------------------------------------------------------------
