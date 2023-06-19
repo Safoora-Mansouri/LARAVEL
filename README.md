@@ -6,30 +6,33 @@ WebDev: https://e2296145.webdev.cmaisonneuve.qc.ca/TP1-laravel/newProject
 -------------------------------------------------------------------------------------------------------------------
 documentation:
 
-On this page, you will find two sections: "Etudiant" and "Ville". When you first enter the page, you will see a list of students in the "Etudiant" section. At the top of the section, there is a "Create" button that allows you to create a new student entry. Each student in the list has a "Select" button that you can click to view more details about that particular student. Upon clicking the "Select" button, you will be directed to a detailed page displaying all the information about the student. On this page, you have the option to edit or delete the student's information. If you choose to delete the student, you will be redirected back to the student list. If you decide to update the student's information, the page will refresh, showing the updated details. Additionally, you can navigate back to the student list by clicking the "List" button. The same concept applies to the "Ville" section. You can access both the "Etudiant" and "Ville" pages from the navbar. From the list in the "Ville" section, you can also perform delete and edit actions. Please note that this is a general description based on the concept you provided. The specific implementation and code may vary depending on your application structure and framework.-
+In this website, the registration process is the fi rst step for users. Once registered, they can log in to the site. The website off ers complete language support, allowing users to experience it in two languages. If a user visits the site as a guest, they will be greeted with the message "Hello, guest." On the other hand, logged-in users will be greeted with "Hello, user."
+Accessing the article page is restricted to registered students only.
+Users must register as students before they can view the articles. After obtaining a unique student ID, they can access the article page. All students have the ability to create articles, but only the author of an article can delete or update it. The website supports bilingual functionality, meaning that students can enter information in both French and English. Regardless of the chosen language, articles are accessible in both languages.
+Similar rules apply to documents. All inputs are validated to ensure data integrity. Additionally, users can upload and download fi les within the document section of the website. Lastly, users have the option to log out when they are fi nished using the site.
+This guide provides an overview of the website's registration process, language support, access restrictions, article creation and management, bilingual functionality,
+document handling, input validation, and logout feature. For a more detailed and expert analysis, it would be necessary to consider specifi c implementation details, database structure, security measures, and any additional features or requirements of the website.
 
 --------------------------------------------------------------------------------------------------------------------
 Commands:
 
-- Créer un dossier nommé “Maisonneuve-2296191” :
-	Composer create-project  --prefer-dist Laravel/Laravel Maisonneuve “8.* “
-- Créer les Modèles :
-	Php artisan make :model Etudient -m
-
-	Php artisan make :model Ville -m
-- créer les tables :
-	php artisan make :factory EtudientFactory
-
-	php artisan make :factory VilleFactory
-- Saisir 15 nouvelles villes et 100 nouveaux étudient
-	php artisan tinker
-    	\App\Models\Ville ::factory()->times(15)->create();
-
-	php artisan tinker
-	\App\Models\Etudient ::factory()->times(100)->create();
-- Créez le controleu
-	Php artisan make :controller EtudientController -m Étudient
-        Php artisan make :controller VilletController -m Ville
+php artisan make:Controller DocumentController -r
+php artisan make:model Document
+php artisan make:factory DocumentFactory
+php artisan migrae:fresh
+php artisan db:seed
+php artisan make:model Article
+php artisan make:factory ArticleFactory
+php artisan make:migration -m Article
+php artisan make:Controller ArticleController -r
+php artisan make:Controller LocalizationController
+php artisan make:middleware Localization
+php artisan make:Controller CustomAuthController
+php artisan make:middleware testMid
+php artisan make:controller localizationController
+php artisan tinker "App\Models\Ville::factory()->times(15)->create();"
+i do not use it in project , just write a function for download and upload the fi les instead.
+composer require barryvdh/laravel-dompdf
 
 
 ----------------------------------------------------------------------------------------------------------------------
