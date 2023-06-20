@@ -29,16 +29,6 @@ class DocumentController extends Controller
         return view('documents.index', compact('documents','etudiant'));
     }
 
-    /////////////////////////////////////////////////////////////////
-    // public function pages()
-    // {
-    //     $docs = Document::select()
-    //         ->orderBy('titre')
-    //         // ->limit(5)
-    //         ->paginate(5); // be jaye limit va get
-      
-    //     return view('documents.pages', ['docs' => $docs]);
-    // }
 ///////////////////////////////////////////////////////////////////
     /**
      * Show the form for creating a new resource.
@@ -60,7 +50,6 @@ class DocumentController extends Controller
             return redirect()->route('login')->with('error', 'You must be logged in to create a document.');
         }
     }
-    
 ////////////////////////////////////////////////////////////////
     /**
      * Store a newly created resource in storage.

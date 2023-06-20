@@ -46,8 +46,6 @@ Commands:
 
 -php artisan tinker "App\Models\Ville::factory()->times(15)->create();"
 
-i do not use it in project , just write a function for download and upload the fi les instead.
-
 -composer require barryvdh/laravel-dompdf
 
 

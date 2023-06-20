@@ -50,5 +50,6 @@ return [
   'text_doc'=>'documents',
   'text_titleCreatDoc'=>'creat a document',
   'text_titlePageDoc'=>'Documents List',
-  'text_selectAnDoc'=> 'You can view the list of documets files here. Click on the title for download.'
+  'text_selectAnDoc'=> 'You can view the list of documets files here. Click on the title for download.',
+  'lang.text_student'=>'student'
 ];
