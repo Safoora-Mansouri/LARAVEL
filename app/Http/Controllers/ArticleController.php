@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    ///////////////////////////////////////////////////////////////
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +34,7 @@ class ArticleController extends Controller
         $message = "You must be logged in as a student user to view articles.";
         return view('articles.index', compact('message'));
     }
-
+/////////////////////////////////////////////////////////////////////
     /**
      * Show the form for creating a new resource.
      *
@@ -43,7 +44,7 @@ class ArticleController extends Controller
     {
         return view('articles.create');
     }
-
+/////////////////////////////////////////////////////////////////////
     /**
      * Store a newly created resource in storage.
      *
@@ -78,7 +79,7 @@ class ArticleController extends Controller
         return redirect()->route('article.index')->with('success', 'Article created successfully');
     }
 
-     
+///////////////////////////////////////////////////////////////////////////
 
     /**
      * Display the specified resource.
@@ -100,6 +101,8 @@ class ArticleController extends Controller
         return view('articles.show', compact('article', "etudiantId"));
     }
 
+    /////////////////////////////////////////////////////////////////////
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -112,40 +115,6 @@ class ArticleController extends Controller
         return view('articles.edit', compact('article'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    // public function update(Request $request, Article $article)
-    // {
-    //     dd($request->titre_fr);
-    //     $article->titre_fr = ucfirst($request->titre_fr);
-    //     $article->titre_en = ucfirst($request->titre_en);
-
-    //     $article->contenu_fr = $request->contenu_fr;
-    //     $article->contenu_en = $request->contenu_en;
-    //     $article->date_de_creation = $request->date_de_creation;
-    //     $article->etudient_id = $request->etudient_id;
-    //     $article->save();
-
-    //     return redirect()->route('article.show', $article)->with('success', 'Article updated successfully');
-    // }
-
-    // public function update(Request $request, Article $article)
-    // {
-    //     $article->update([
-    //         'titre' => $request->titre,
-    //         'contenu' => $request->contenu,
-    //         'date_de_creation' => $request->date_de_creation,
-    //         'langue' => $request->langue,
-    //         'etudient_id' => $request->etudient_id,
-    //     ]);
-
-    //     return redirect()->route('article.show', $article)->with('success', 'Article updated successfully');
-    // }
     public function update(Request $request, Article $article)
     {
         $user = Auth::user();
@@ -179,6 +148,7 @@ class ArticleController extends Controller
         redirect()->route('login')->with('error', 'forbidden access');
        
     }
+    /////////////////////////////////////////////////////////////////////////
     /**
      * Remove the specified resource from storage.
      *
